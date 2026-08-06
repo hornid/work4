@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galactic Access</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --neon-cyan: #00f5ff;
+            --neon-magenta: #ff00ff;
+            --neon-violet: #8b5cf6;
+            --neon-blue: #3b82f6;
+            --glass-bg: rgba(15, 15, 35, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #030014;
+        }
+
+        /* Galactic Background */
+        #galactic-bg {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(0, 245, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(255, 0, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, #0a0a2e 0%, #030014 100%);
+            z-index: 0;
+        }
+
+        .nebula {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            z-index: 0;
+            animation: nebulaPulse 10s ease-in-out infinite alternate;
+        }
+
+        .nebula-1 {
+            width: 600px;
+            height: 400px;
+            background: radial-gradient(ellipse, rgba(139, 92, 246, 0.3), transparent);
+            top: -10%;
+            left: -10%;
+            animation-duration: 12s;
+        }
+
+        .nebula-2 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(ellipse, rgba(0, 245, 255, 0.2), transparent);
+            bottom: -15%;
+            right: -10%;
+            animation-duration: 15s;
+            animation-delay: -3s;
+        }
+
+        .nebula-3 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(ellipse, rgba(255, 0, 255, 0.15), transparent);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-duration: 8s;
+            animation-delay: -5s;
+        }
+
+        @keyframes nebulaPulse {
+            0% { opacity: 0.2; transform: scale(1); }
+            100% { opacity: 0.5; transform: scale(1.1); }
+        }
+
+        .nebula-3 {
+            animation-name: nebulaPulseCenter;
+        }
+
+        @keyframes nebulaPulseCenter {
+            0% { opacity: 0.1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        /* Sparkle Canvas */
+        #sparkle-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Main Content */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        /* Liquid Glass Card */
+        .glass-card {
+            position: relative;
+            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 24px;
+            backdrop-filter: blur(20px) saturate(1.5);
+            -webkit-backdrop-filter: blur(20px) saturate(1.5);
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 28px;
+            max-width: 380px;
+            width: 100%;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                0 0 80px rgba(139, 92, 246, 0.1);
+            animation: cardAppear 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(139,92,246,0.3), transparent 40%, transparent 60%, rgba(0,245,255,0.2));
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        @keyframes cardAppear {
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Photo Slot */
+        .photo-slot {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .photo-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            background: linear-gradient(135deg, var(--neon-violet), var(--neon-cyan), var(--neon-magenta)) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: ringRotate 6s linear infinite;
+        }
+
+        @keyframes ringRotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .photo-inner {
+            width: 104px;
+            height: 104px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(0,245,255,0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .photo-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .photo-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.7rem;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .photo-placeholder svg {
+            width: 28px;
+            height: 28px;
+            stroke: rgba(255,255,255,0.3);
+            fill: none;
+            stroke-width: 1.5;
+        }
+
+        .photo-slot:hover .photo-inner {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+        }
+
+        .photo-slot:hover .photo-ring {
+            animation-duration: 3s;
+        }
+
+        #photo-input {
+            display: none;
+        }
+
+        /* Title */
+        .title {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.7);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        /* Password Input */
+        .password-container {
+            display: flex;
+            gap: 12px;
+        }
+
+        .digit-input {
+            width: 52px;
+            height: 60px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 300;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s ease;
+            caret-color: var(--neon-cyan);
+        }
+
+        .digit-input:focus {
+            border-color: var(--neon-violet);
+            background: rgba(139, 92, 246, 0.08);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.2), inset 0 0 20px rgba(139, 92, 246, 0.05);
+        }
+
+        .digit-input.filled {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 245, 255, 0.05);
+        }
+
+        .digit-input.error {
+            animation: shake 0.5s ease;
+            border-color: #ff4444;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.3);
+        }
+
+        .digit-input.success {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(0,245,255,0.15));
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(139,92,246,0.4), rgba(0,245,255,0.3));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .submit-btn:hover {
+            border-color: var(--neon-violet);
+            box-shadow: 0 0 30px rgba(139,92,246,0.3);
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:hover::before {
+            opacity: 1;
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hint */
+        .hint {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.25);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* Success Page */
+        .success-page {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: #030014;
+        }
+
+        .success-page.active {
+            display: flex;
+        }
+
+        .success-content {
+            text-align: center;
+            animation: successAppear 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes successAppear {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .success-text {
+            font-size: 2rem;
+            font-weight: 300;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-violet), var(--neon-magenta));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(30deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 420px) {
+            .glass-card {
+                padding: 35px 25px;
+                gap: 22px;
+            }
+            .digit-input {
+                width: 46px;
+                height: 54px;
+                font-size: 1.3rem;
+            }
+            .photo-slot {
+                width: 100px;
+                height: 100px;
+            }
+            .photo-inner {
+                width: 86px;
+                height: 86px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background -->
+    <div id="galactic-bg"></div>
+    <div class="nebula nebula-1"></div>
+    <div class="nebula nebula-2"></div>
+    <div class="nebula nebula-3"></div>
+    <canvas id="sparkle-canvas"></canvas>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="glass-card">
+            <!-- Photo Slot -->
+            <div class="photo-slot" onclick="document.getElementById('photo-input').click()">
+                <div class="photo-ring"></div>
+                <div class="photo-inner" id="photo-inner">
+                    <div class="photo-placeholder" id="photo-placeholder">
+                        <svg viewBox="0 0 24 24"><path d="M20 5H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V7a2 2 0 00-2-2zM7 8a3 3 0 100 6 3 3 0 000-6zm10 8H7l3-4 2 2 3-3 5 5z"/></svg>
+                        <span>Add Photo</span>
+                    </div>
+                    <img id="photo-preview" style="display:none;" alt="Preview">
+                </div>
+                <input type="file" id="photo-input" accept="image/*" onchange="loadPhoto(event)">
+            </div>
+
+            <!-- Title -->
+            <div class="title">Enter Access Code</div>
+
+            <!-- Password Input -->
+            <div class="password-container">
+                <input type="password" class="digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                <input type="password" class="digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                <input type="password" class="digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                <input type="password" class="digit-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
+            </div>
+
+            <!-- Submit -->
+            <button class="submit-btn" onclick="checkPassword()"><span>Enter</span></button>
+
+            <!-- Hint -->
+            <div class="hint">Enter the 4-digit code to continue</div>
+        </div>
+    </div>
+
+    <!-- Success Page -->
+    <div class="success-page" id="success-page">
+        <div class="success-content">
+            <div class="success-text">Welcome ✦</div>
+            <p style="color: rgba(255,255,255,0.5); margin-top: 15px;">Access granted</p>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // Sparkle Particles
+        // ============================================
+        const canvas = document.getElementById('sparkle-canvas');
+        const ctx = canvas.getContext('2d');
+        let sparkles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Sparkle {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * canvas.height; // Start anywhere
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = -10;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedY = Math.random() * 1.2 + 0.3;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.8 + 0.2;
+                this.twinkleSpeed = Math.random() * 0.02 + 0.005;
+                this.twinkleOffset = Math.random() * Math.PI * 2;
+                this.hue = Math.random() > 0.7 ? 280 : (Math.random() > 0.5 ? 200 : 260); // cyan, violet, magenta
+            }
+
+            update(time) {
+                this.y += this.speedY;
+                this.x += this.speedX + Math.sin(time * 0.001 + this.twinkleOffset) * 0.2;
+                this.currentOpacity = this.opacity * (0.5 + 0.5 * Math.sin(time * this.twinkleSpeed + this.twinkleOffset));
+
+                if (this.y > canvas.height + 10) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.currentOpacity;
+                
+                // Glow
+                const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 3);
+                gradient.addColorStop(0, `hsla(${this.hue}, 100%, 80%, 0.8)`);
+                gradient.addColorStop(0.5, `hsla(${this.hue}, 100%, 70%, 0.3)`);
+                gradient.addColorStop(1, 'transparent');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Core
+                ctx.fillStyle = `hsla(${this.hue}, 100%, 95%, ${this.currentOpacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+        }
+
+        // Create sparkles
+        for (let i = 0; i < 80; i++) {
+            sparkles.push(new Sparkle());
+        }
+
+        function animateSparkles(time) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            sparkles.forEach(s => {
+                s.update(time);
+                s.draw();
+            });
+            requestAnimationFrame(animateSparkles);
+        }
+        requestAnimationFrame(animateSparkles);
+
+        // ============================================
+        // Password Input
+        // ============================================
+        const inputs = document.querySelectorAll('.digit-input');
+
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                const val = e.target.value;
+                if (val && !/^\d$/.test(val)) {
+                    e.target.value = '';
+                    return;
+                }
+                if (val) {
+                    input.classList.add('filled');
+                    if (index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                } else {
+                    input.classList.remove('filled');
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const paste = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 4);
+                paste.split('').forEach((char, i) => {
+                    if (inputs[i]) {
+                        inputs[i].value = char;
+                        inputs[i].classList.add('filled');
+                    }
+                });
+                if (inputs[paste.length]) inputs[paste.length].focus();
+                else inputs[3].focus();
+            });
+        });
+
+        function checkPassword() {
+            const code = Array.from(inputs).map(i => i.value).join('');
+            
+            if (code.length < 4) {
+                inputs.forEach(i => {
+                    if (!i.value) {
+                        i.classList.add('error');
+                        setTimeout(() => i.classList.remove('error'), 500);
+                    }
+                });
+                return;
+            }
+
+            // Password: 1919 (19th birthday)
+            if (code === '1919') {
+                inputs.forEach(i => {
+                    i.classList.add('success');
+                });
+                setTimeout(() => {
+                    document.getElementById('success-page').classList.add('active');
+                }, 600);
+            } else {
+                inputs.forEach(i => {
+                    i.classList.add('error');
+                    setTimeout(() => i.classList.remove('error'), 500);
+                });
+                // Shake the card
+                document.querySelector('.glass-card').style.animation = 'shake 0.5s ease';
+                setTimeout(() => {
+                    document.querySelector('.glass-card').style.animation = '';
+                }, 500);
+            }
+        }
+
+        // Focus first input on load
+        inputs[0].focus();
+
+        // ============================================
+        // Photo Upload
+        // ============================================
+        function loadPhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('photo-preview');
+                const placeholder = document.getElementById('photo-placeholder');
+                img.src = e.target.result;
+                img.style.display = 'block';
+                placeholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>
