@@ -2,24 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Galactic Access</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         :root {
             --cyan: #00f5ff;
             --violet: #8b5cf6;
             --magenta: #ff00ff;
-            --blue: #3b82f6;
             --pink: #ec4899;
+            --blue: #3b82f6;
         }
 
         html, body {
             height: 100%;
+            width: 100%;
             overflow: hidden;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: #020010;
+            touch-action: manipulation;
         }
 
         /* === GALACTIC BACKGROUND === */
@@ -28,9 +30,9 @@
             inset: 0;
             z-index: 0;
             background: 
-                radial-gradient(ellipse at 30% 20%, rgba(139, 92, 246, 0.2) 0%, transparent 50%),
-                radial-gradient(ellipse at 70% 60%, rgba(0, 245, 255, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 90%, rgba(255, 0, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(ellipse at 30% 20%, rgba(139, 92, 246, 0.25) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 60%, rgba(0, 245, 255, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 90%, rgba(255, 0, 255, 0.15) 0%, transparent 40%),
                 radial-gradient(ellipse at 50% 50%, #0a0a30 0%, #020010 100%);
         }
 
@@ -43,50 +45,43 @@
         }
 
         .nebula-1 {
-            width: 700px; height: 500px;
-            background: radial-gradient(ellipse, rgba(139, 92, 246, 0.4), transparent 70%);
-            top: -20%; left: -15%;
-            animation: nebula1 12s ease-in-out infinite alternate;
+            width: 500px; height: 400px;
+            background: radial-gradient(ellipse, rgba(139, 92, 246, 0.5), transparent 70%);
+            top: -15%; left: -20%;
+            animation: nebula1 10s ease-in-out infinite alternate;
         }
         .nebula-2 {
-            width: 600px; height: 600px;
-            background: radial-gradient(ellipse, rgba(0, 245, 255, 0.3), transparent 70%);
-            bottom: -20%; right: -15%;
-            animation: nebula2 15s ease-in-out infinite alternate;
+            width: 450px; height: 450px;
+            background: radial-gradient(ellipse, rgba(0, 245, 255, 0.35), transparent 70%);
+            bottom: -15%; right: -20%;
+            animation: nebula2 12s ease-in-out infinite alternate;
         }
         .nebula-3 {
-            width: 400px; height: 400px;
-            background: radial-gradient(ellipse, rgba(255, 0, 255, 0.25), transparent 70%);
-            top: 30%; left: 50%;
-            animation: nebula3 10s ease-in-out infinite alternate;
+            width: 300px; height: 300px;
+            background: radial-gradient(ellipse, rgba(255, 0, 255, 0.3), transparent 70%);
+            top: 40%; left: 50%;
+            transform: translateX(-50%);
+            animation: nebula3 8s ease-in-out infinite alternate;
         }
 
         @keyframes nebula1 {
-            0% { transform: translate(0, 0) scale(1); opacity: 0.4; }
-            100% { transform: translate(50px, 30px) scale(1.2); opacity: 0.7; }
+            0% { opacity: 0.4; transform: translate(0, 0); }
+            100% { opacity: 0.7; transform: translate(30px, 20px); }
         }
         @keyframes nebula2 {
-            0% { transform: translate(0, 0) scale(1); opacity: 0.3; }
-            100% { transform: translate(-40px, -20px) scale(1.1); opacity: 0.6; }
+            0% { opacity: 0.3; transform: translate(0, 0); }
+            100% { opacity: 0.6; transform: translate(-20px, -15px); }
         }
         @keyframes nebula3 {
-            0% { transform: translate(-50%, 0) scale(1); opacity: 0.2; }
-            100% { transform: translate(-50%, 40px) scale(1.3); opacity: 0.5; }
+            0% { opacity: 0.2; transform: translateX(-50%) scale(1); }
+            100% { opacity: 0.5; transform: translateX(-50%) scale(1.2); }
         }
 
-        /* === STAR FIELD === */
-        #star-canvas {
+        /* === CANVASES === */
+        #star-canvas, #sparkle-canvas {
             position: fixed;
             inset: 0;
             z-index: 1;
-            pointer-events: none;
-        }
-
-        /* === SPARKLE CANVAS === */
-        #sparkle-canvas {
-            position: fixed;
-            inset: 0;
-            z-index: 2;
             pointer-events: none;
         }
 
@@ -95,31 +90,33 @@
             position: relative;
             z-index: 10;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            padding: 20px;
-            gap: 40px;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 30px 25px;
+            gap: 30px;
         }
 
-        /* === PHOTO SIDE === */
+        /* === PHOTO SLOT === */
         .photo-side {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
-            animation: buildLeft 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+            gap: 12px;
+            animation: buildUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
             opacity: 0;
-            transform: translateX(-40px);
+            transform: translateY(30px);
         }
 
-        @keyframes buildLeft {
-            to { opacity: 1; transform: translateX(0); }
+        @keyframes buildUp {
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .photo-slot {
-            width: 160px;
-            height: 160px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
             position: relative;
             display: flex;
@@ -127,6 +124,16 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.4s ease;
+        }
+
+        .photo-ring-glow {
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, var(--cyan), var(--violet), var(--magenta), var(--pink), var(--cyan));
+            filter: blur(12px);
+            opacity: 0.7;
+            animation: ringSpin 4s linear infinite;
         }
 
         .photo-ring {
@@ -142,24 +149,13 @@
             animation: ringSpin 4s linear infinite;
         }
 
-        .photo-ring-glow {
-            position: absolute;
-            inset: -8px;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg, var(--cyan), var(--violet), var(--magenta), var(--cyan));
-            filter: blur(15px);
-            opacity: 0.6;
-            animation: ringSpin 4s linear infinite;
-            z-index: -1;
-        }
-
         @keyframes ringSpin {
             to { transform: rotate(360deg); }
         }
 
         .photo-inner {
-            width: 140px;
-            height: 140px;
+            width: 114px;
+            height: 114px;
             border-radius: 50%;
             background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(0,245,255,0.1));
             display: flex;
@@ -168,7 +164,7 @@
             overflow: hidden;
             position: relative;
             z-index: 1;
-            box-shadow: inset 0 0 30px rgba(139, 92, 246, 0.2);
+            box-shadow: inset 0 0 25px rgba(139, 92, 246, 0.2);
         }
 
         .photo-inner img {
@@ -182,33 +178,32 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             color: rgba(255,255,255,0.4);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-align: center;
-            padding: 15px;
+            padding: 12px;
         }
 
         .photo-placeholder svg {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             stroke: var(--cyan);
             fill: none;
             stroke-width: 1.5;
             filter: drop-shadow(0 0 8px rgba(0, 245, 255, 0.5));
         }
 
-        .photo-slot:hover .photo-inner {
-            transform: scale(1.05);
-            box-shadow: inset 0 0 40px rgba(139, 92, 246, 0.4), 0 0 30px rgba(139, 92, 246, 0.3);
+        .photo-slot:active .photo-inner {
+            transform: scale(0.95);
         }
 
         #photo-input { display: none; }
 
         .photo-label {
-            font-size: 0.75rem;
-            color: rgba(255,255,255,0.4);
-            letter-spacing: 2px;
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 3px;
             text-transform: uppercase;
         }
 
@@ -217,34 +212,30 @@
             position: relative;
             background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
             border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 28px;
-            backdrop-filter: blur(24px) saturate(1.8);
-            -webkit-backdrop-filter: blur(24px) saturate(1.8);
-            padding: 45px 40px;
+            border-radius: 24px;
+            backdrop-filter: blur(20px) saturate(1.8);
+            -webkit-backdrop-filter: blur(20px) saturate(1.8);
+            padding: 35px 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 25px;
-            max-width: 360px;
+            gap: 22px;
             width: 100%;
+            max-width: 340px;
             box-shadow: 
-                0 25px 80px rgba(0, 0, 0, 0.6),
+                0 20px 60px rgba(0, 0, 0, 0.5),
                 inset 0 1px 0 rgba(255, 255, 255, 0.06),
-                0 0 100px rgba(139, 92, 246, 0.15);
-            animation: buildCard 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+                0 0 80px rgba(139, 92, 246, 0.12);
+            animation: buildUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
             opacity: 0;
-            transform: translateY(30px) scale(0.9);
-        }
-
-        @keyframes buildCard {
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            transform: translateY(30px);
         }
 
         .glass-card::before {
             content: '';
             position: absolute;
             inset: -1px;
-            border-radius: 28px;
+            border-radius: 24px;
             background: linear-gradient(135deg, rgba(139,92,246,0.4), transparent 40%, transparent 60%, rgba(0,245,255,0.3));
             z-index: -1;
             opacity: 0.6;
@@ -263,42 +254,42 @@
         /* === TITLE === */
         .title-area {
             text-align: center;
-            animation: buildItem 0.8s ease 1.2s forwards;
+            animation: buildUp 0.8s ease 1.2s forwards;
             opacity: 0;
             transform: translateY(15px);
         }
 
-        @keyframes buildItem {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         .title-area h2 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 300;
-            letter-spacing: 4px;
+            letter-spacing: 5px;
             text-transform: uppercase;
             background: linear-gradient(90deg, var(--cyan), var(--violet), var(--magenta));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.5));
+            filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.5));
         }
 
         .title-area p {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.4);
-            margin-top: 8px;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.35);
+            margin-top: 6px;
             letter-spacing: 2px;
         }
 
         /* === DIVIDER === */
         .divider {
-            width: 60px;
+            width: 50px;
             height: 1px;
             background: linear-gradient(90deg, transparent, var(--violet), transparent);
-            box-shadow: 0 0 10px var(--violet);
-            animation: buildItem 0.6s ease 1.4s forwards;
+            box-shadow: 0 0 8px var(--violet);
+            animation: fadeIn 0.6s ease 1.5s forwards;
             opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
         }
 
         /* === PASSWORD === */
@@ -306,27 +297,31 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
-            animation: buildItem 0.8s ease 1.6s forwards;
+            gap: 18px;
+            width: 100%;
+            animation: buildUp 0.8s ease 1.7s forwards;
             opacity: 0;
             transform: translateY(15px);
         }
 
         .password-label {
-            font-size: 0.75rem;
-            color: rgba(255,255,255,0.35);
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.3);
             letter-spacing: 3px;
             text-transform: uppercase;
         }
 
         .password-container {
             display: flex;
-            gap: 12px;
+            gap: 10px;
+            width: 100%;
+            justify-content: center;
         }
 
         .digit-input {
-            width: 54px;
-            height: 64px;
+            flex: 1;
+            max-width: 60px;
+            height: 62px;
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 14px;
@@ -337,6 +332,8 @@
             outline: none;
             transition: all 0.3s ease;
             caret-color: var(--cyan);
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .digit-input:focus {
@@ -348,27 +345,27 @@
         .digit-input.filled {
             border-color: var(--cyan);
             background: rgba(0, 245, 255, 0.05);
-            box-shadow: 0 0 15px rgba(0, 245, 255, 0.2);
+            box-shadow: 0 0 12px rgba(0, 245, 255, 0.2);
         }
 
         .digit-input.error {
             animation: shake 0.5s ease;
             border-color: #ff4444;
-            box-shadow: 0 0 25px rgba(255, 68, 68, 0.4);
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.4);
         }
 
         .digit-input.success {
             border-color: #00ff88;
-            box-shadow: 0 0 25px rgba(0, 255, 136, 0.4);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
             background: rgba(0, 255, 136, 0.08);
         }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            20% { transform: translateX(-8px); }
-            40% { transform: translateX(8px); }
-            60% { transform: translateX(-4px); }
-            80% { transform: translateX(4px); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-3px); }
+            80% { transform: translateX(3px); }
         }
 
         /* === SUBMIT BUTTON === */
@@ -387,9 +384,8 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            animation: buildItem 0.6s ease 2s forwards;
+            animation: buildUp 0.6s ease 2.1s forwards;
             opacity: 0;
-            transform: translateY(10px);
         }
 
         .submit-btn::before {
@@ -415,28 +411,23 @@
 
         @keyframes shimmer {
             0% { transform: translateX(-100%); }
-            50% { transform: translateX(100%); }
-            100% { transform: translateX(100%); }
+            50%, 100% { transform: translateX(100%); }
         }
 
-        .submit-btn:hover {
-            border-color: var(--cyan);
-            box-shadow: 0 0 40px rgba(139, 92, 246, 0.4), 0 0 80px rgba(0, 245, 255, 0.2);
-            transform: translateY(-2px);
+        .submit-btn:active {
+            transform: scale(0.97);
         }
 
-        .submit-btn:hover::before { opacity: 1; }
-
-        .submit-btn:active { transform: translateY(0); }
+        .submit-btn:active::before { opacity: 1; }
 
         .submit-btn span { position: relative; z-index: 1; }
 
         /* === HINT === */
         .hint {
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.2);
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.15);
             text-align: center;
-            animation: buildItem 0.6s ease 2.3s forwards;
+            animation: fadeIn 0.6s ease 2.4s forwards;
             opacity: 0;
         }
 
@@ -449,6 +440,7 @@
             align-items: center;
             justify-content: center;
             background: #020010;
+            padding: 30px;
         }
 
         .success-overlay.active { display: flex; }
@@ -464,9 +456,9 @@
         }
 
         .success-text {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 200;
-            letter-spacing: 8px;
+            letter-spacing: 6px;
             text-transform: uppercase;
             background: linear-gradient(90deg, var(--cyan), var(--violet), var(--magenta), var(--cyan));
             background-size: 300% 100%;
@@ -474,7 +466,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: gradientFlow 3s linear infinite;
-            filter: drop-shadow(0 0 30px rgba(139, 92, 246, 0.6));
+            filter: drop-shadow(0 0 25px rgba(139, 92, 246, 0.6));
         }
 
         @keyframes gradientFlow {
@@ -483,42 +475,79 @@
         }
 
         .success-sub {
-            color: rgba(255,255,255,0.4);
-            margin-top: 15px;
-            font-size: 0.9rem;
+            color: rgba(255,255,255,0.35);
+            margin-top: 12px;
+            font-size: 0.85rem;
             letter-spacing: 3px;
         }
 
-        /* === RESPONSIVE === */
-        @media (max-width: 700px) {
-            .main-container {
-                flex-direction: column;
-                gap: 30px;
-            }
-            .photo-slot { width: 130px; height: 130px; }
-            .photo-inner { width: 114px; height: 114px; }
-            .glass-card { padding: 35px 30px; max-width: 320px; }
-            .digit-input { width: 46px; height: 56px; font-size: 1.4rem; }
+        .success-sparkles {
+            margin-top: 25px;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
         }
 
-        @media (max-width: 400px) {
-            .glass-card { padding: 30px 22px; }
-            .digit-input { width: 42px; height: 52px; font-size: 1.3rem; gap: 8px; }
+        .success-sparkle {
+            font-size: 1.5rem;
+            animation: sparkleBounce 1.5s ease infinite;
+        }
+
+        .success-sparkle:nth-child(2) { animation-delay: 0.2s; }
+        .success-sparkle:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes sparkleBounce {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
+            50% { transform: translateY(-8px) scale(1.2); opacity: 1; }
+        }
+
+        /* === GALACTIC RING DECORATION === */
+        .galactic-ring {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 1px solid rgba(139, 92, 246, 0.08);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            pointer-events: none;
+            animation: ringRotate 30s linear infinite;
+        }
+
+        .galactic-ring::before {
+            content: '';
+            position: absolute;
+            inset: 30px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 245, 255, 0.06);
+            animation: ringRotate 20s linear infinite reverse;
+        }
+
+        .galactic-ring::after {
+            content: '';
+            position: absolute;
+            inset: 60px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 0, 255, 0.05);
+            animation: ringRotate 25s linear infinite;
         }
     </style>
-</head</head>
+</head>
 <body>
     <!-- Background Layers -->
     <div id="galactic-bg"></div>
     <div class="nebula nebula-1"></div>
     <div class="nebula nebula-2"></div>
     <div class="nebula nebula-3"></div>
+    <div class="galactic-ring"></div>
     <canvas id="star-canvas"></canvas>
     <canvas id="sparkle-canvas"></canvas>
 
     <!-- Main Content -->
     <div class="main-container">
-        <!-- Photo Slot (Left Side) -->
+        <!-- Photo Slot -->
         <div class="photo-side">
             <div class="photo-slot" onclick="document.getElementById('photo-input').click()">
                 <div class="photo-ring-glow"></div>
@@ -565,123 +594,106 @@
         <div class="success-content">
             <div class="success-text">Welcome</div>
             <p class="success-sub">Access Granted</p>
+            <div class="success-sparkles">
+                <span class="success-sparkle">✨</span>
+                <span class="success-sparkle">💜</span>
+                <span class="success-sparkle">✨</span>
+            </div>
         </div>
     </div>
 
     <script>
         // ============================================
-        // Star Field (Background Stars)
+        // Star Field
         // ============================================
         const starCanvas = document.getElementById('star-canvas');
         const starCtx = starCanvas.getContext('2d');
         let bgStars = [];
 
-        function resizeStarCanvas() {
-            starCanvas.width = window.innerWidth;
-            starCanvas.height = window.innerHeight;
+        function resizeCanvas(canvas) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
-        resizeStarCanvas();
-        window.addEventListener('resize', resizeStarCanvas);
+        resizeCanvas(starCanvas);
+        window.addEventListener('resize', () => resizeCanvas(starCanvas));
 
-        for (let i = 0; i < 200; i++) {
+        for (let i = 0; i < 150; i++) {
             bgStars.push({
                 x: Math.random() * window.innerWidth,
                 y: Math.random() * window.innerHeight,
                 size: Math.random() * 1.5 + 0.3,
-                opacity: Math.random() * 0.6 + 0.2,
-                twinkleSpeed: Math.random() * 0.003 + 0.001,
-                twinkleOffset: Math.random() * Math.PI * 2
+                opacity: Math.random() * 0.5 + 0.2,
+                speed: Math.random() * 0.002 + 0.001,
+                offset: Math.random() * Math.PI * 2
             });
         }
 
         function drawStars(time) {
             starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
-            bgStars.forEach(star => {
-                const flicker = 0.5 + 0.5 * Math.sin(time * star.twinkleSpeed + star.twinkleOffset);
-                const opacity = star.opacity * flicker;
-
+            bgStars.forEach(s => {
+                const flicker = 0.5 + 0.5 * Math.sin(time * s.speed + s.offset);
+                const o = s.opacity * flicker;
                 starCtx.beginPath();
-                starCtx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-                starCtx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                starCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                starCtx.fillStyle = `rgba(255, 255, 255, ${o})`;
                 starCtx.fill();
-
-                // Glow on larger stars
-                if (star.size > 1) {
+                if (s.size > 1) {
                     starCtx.beginPath();
-                    starCtx.arc(star.x, star.y, star.size * 3, 0, Math.PI * 2);
-                    starCtx.fillStyle = `rgba(200, 220, 255, ${opacity * 0.15})`;
+                    starCtx.arc(s.x, s.y, s.size * 3, 0, Math.PI * 2);
+                    starCtx.fillStyle = `rgba(200, 220, 255, ${o * 0.1})`;
                     starCtx.fill();
                 }
             });
         }
 
         // ============================================
-        // Falling Sparkles (Real particles)
+        // Falling Sparkles
         // ============================================
         const sparkleCanvas = document.getElementById('sparkle-canvas');
         const sparkleCtx = sparkleCanvas.getContext('2d');
-        let fallingSparkles = [];
-
-        function resizeSparkleCanvas() {
-            sparkleCanvas.width = window.innerWidth;
-            sparkleCanvas.height = window.innerHeight;
-        }
-        resizeSparkleCanvas();
-        window.addEventListener('resize', resizeSparkleCanvas);
+        let sparkles = [];
+        resizeCanvas(sparkleCanvas);
+        window.addEventListener('resize', () => resizeCanvas(sparkleCanvas));
 
         class Sparkle {
-            constructor() {
-                this.reset(true);
-            }
-
+            constructor() { this.reset(true); }
             reset(init) {
                 this.x = Math.random() * sparkleCanvas.width;
                 this.y = init ? Math.random() * sparkleCanvas.height : -10;
                 this.size = Math.random() * 2 + 0.5;
-                this.speedY = Math.random() * 1.5 + 0.5;
-                this.speedX = (Math.random() - 0.5) * 0.4;
-                this.opacity = Math.random() * 0.8 + 0.2;
-                this.twinkleSpeed = Math.random() * 0.015 + 0.005;
+                this.speedY = Math.random() * 1.2 + 0.4;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.7 + 0.3;
+                this.twinkleSpeed = Math.random() * 0.012 + 0.005;
                 this.twinkleOffset = Math.random() * Math.PI * 2;
-                this.hue = [180, 260, 280, 300, 320][Math.floor(Math.random() * 5)]; // cyan to magenta range
+                this.hue = [180, 260, 280, 300, 320][Math.floor(Math.random() * 5)];
                 this.brightness = Math.random() * 20 + 70;
             }
-
             update(time) {
                 this.y += this.speedY;
-                this.x += this.speedX + Math.sin(time * 0.0008 + this.x * 0.01) * 0.3;
+                this.x += this.speedX + Math.sin(time * 0.0006 + this.x * 0.01) * 0.2;
                 this.currentOpacity = this.opacity * (0.4 + 0.6 * Math.sin(time * this.twinkleSpeed + this.twinkleOffset));
-
-                if (this.y > sparkleCanvas.height + 10) {
-                    this.reset(false);
-                }
+                if (this.y > sparkleCanvas.height + 10) this.reset(false);
                 if (this.x < -10) this.x = sparkleCanvas.width + 10;
                 if (this.x > sparkleCanvas.width + 10) this.x = -10;
             }
-
             draw() {
                 const s = this.size;
                 const o = this.currentOpacity;
-
-                // Outer glow
                 const glow = sparkleCtx.createRadialGradient(this.x, this.y, 0, this.x, this.y, s * 5);
                 glow.addColorStop(0, `hsla(${this.hue}, 100%, ${this.brightness}%, ${o * 0.6})`);
-                glow.addColorStop(0.4, `hsla(${this.hue}, 100%, ${this.brightness}%, ${o * 0.2})`);
+                glow.addColorStop(0.4, `hsla(${this.hue}, 100%, ${this.brightness}%, ${o * 0.15})`);
                 glow.addColorStop(1, 'transparent');
                 sparkleCtx.fillStyle = glow;
                 sparkleCtx.beginPath();
                 sparkleCtx.arc(this.x, this.y, s * 5, 0, Math.PI * 2);
                 sparkleCtx.fill();
-
-                // Core sparkle
                 sparkleCtx.fillStyle = `hsla(${this.hue}, 100%, 95%, ${o})`;
                 sparkleCtx.beginPath();
                 sparkleCtx.arc(this.x, this.y, s, 0, Math.PI * 2);
                 sparkleCtx.fill();
-
-                // Cross flare on brighter ones
-                if (this.size > 1.2 && o > 0.6) {
-                    sparkleCtx.strokeStyle = `hsla(${this.hue}, 100%, 90%, ${o * 0.4})`;
+                if (s > 1.2 && o > 0.6) {
+                    sparkleCtx.strokeStyle = `hsla(${this.hue}, 100%, 90%, ${o * 0.3})`;
                     sparkleCtx.lineWidth = 0.5;
                     sparkleCtx.beginPath();
                     sparkleCtx.moveTo(this.x - s * 3, this.y);
@@ -693,23 +705,18 @@
             }
         }
 
-        for (let i = 0; i < 100; i++) {
-            fallingSparkles.push(new Sparkle());
-        }
+        for (let i = 0; i < 80; i++) sparkles.push(new Sparkle());
 
         function animate(time) {
             sparkleCtx.clearRect(0, 0, sparkleCanvas.width, sparkleCanvas.height);
             drawStars(time);
-            fallingSparkles.forEach(s => {
-                s.update(time);
-                s.draw();
-            });
+            sparkles.forEach(s => { s.update(time); s.draw(); });
             requestAnimationFrame(animate);
         }
         requestAnimationFrame(animate);
 
         // ============================================
-        // Password Logic
+        // Password
         // ============================================
         const inputs = document.querySelectorAll('.digit-input');
 
@@ -724,13 +731,9 @@
                     input.classList.remove('filled');
                 }
             });
-
             input.addEventListener('keydown', (e) => {
-                if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                    inputs[index - 1].focus();
-                }
+                if (e.key === 'Backspace' && !e.target.value && index > 0) inputs[index - 1].focus();
             });
-
             input.addEventListener('paste', (e) => {
                 e.preventDefault();
                 const paste = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 4);
@@ -743,22 +746,17 @@
 
         function checkPassword() {
             const code = Array.from(inputs).map(i => i.value).join('');
-
             if (code.length < 4) {
                 inputs.forEach(i => { if (!i.value) { i.classList.add('error'); setTimeout(() => i.classList.remove('error'), 500); }});
                 return;
             }
-
             if (code === '1435') {
                 inputs.forEach(i => i.classList.add('success'));
                 setTimeout(() => {
                     document.getElementById('success-overlay').classList.add('active');
                 }, 700);
             } else {
-                inputs.forEach(i => {
-                    i.classList.add('error');
-                    setTimeout(() => i.classList.remove('error'), 500);
-                });
+                inputs.forEach(i => { i.classList.add('error'); setTimeout(() => i.classList.remove('error'), 500); });
                 document.querySelector('.glass-card').style.animation = 'shake 0.5s ease';
                 setTimeout(() => { document.querySelector('.glass-card').style.animation = ''; }, 500);
             }
@@ -772,14 +770,11 @@
         function loadPhoto(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
-                const img = document.getElementById('photo-preview');
-                const ph = document.getElementById('photo-placeholder');
-                img.src = e.target.result;
-                img.style.display = 'block';
-                ph.style.display = 'none';
+                document.getElementById('photo-preview').src = e.target.result;
+                document.getElementById('photo-preview').style.display = 'block';
+                document.getElementById('photo-placeholder').style.display = 'none';
             };
             reader.readAsDataURL(file);
         }
