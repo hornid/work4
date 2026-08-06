@@ -170,17 +170,21 @@
         /* === WRONG CODE PAGE === */
         .error-card {
             position: relative; width: 100%; max-width: 320px;
-            background: linear-gradient(145deg, rgba(255,51,102,0.06) 0%, rgba(168,85,247,0.03) 100%);
-            border: 1px solid rgba(255,51,102,0.2); border-radius: 24px;
+            background: linear-gradient(145deg, rgba(255,51,102,0.08) 0%, rgba(168,85,247,0.04) 100%);
+            border: 1px solid rgba(255,51,102,0.25); border-radius: 24px;
             backdrop-filter: blur(24px) saturate(1.8); -webkit-backdrop-filter: blur(24px) saturate(1.8);
             padding: 30px 24px; display: flex; flex-direction: column; align-items: center; gap: 18px;
-            box-shadow: 0 25px 70px rgba(0,0,0,0.6), 0 0 50px rgba(255,51,102,0.08);
-            animation: cardBuild 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.6), 0 0 50px rgba(255,51,102,0.1);
+            animation: errorBuild 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes errorBuild {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
         .error-card::before {
             content: ''; position: absolute; inset: -1px; border-radius: 24px;
-            background: linear-gradient(135deg, rgba(255,51,102,0.35), transparent 40%, transparent 60%, rgba(255,51,102,0.2));
-            z-index: -1; opacity: 0.5;
+            background: linear-gradient(135deg, rgba(255,51,102,0.4), transparent 40%, transparent 60%, rgba(168,85,247,0.25));
+            z-index: -1; opacity: 0.6;
         }
 
         .error-icon {
@@ -197,25 +201,26 @@
 
         /* GIF SLOT */
         .gif-slot {
-            width: 100%; min-height: 140px; border-radius: 16px;
-            background: rgba(255,51,102,0.04); border: 2px dashed rgba(255,51,102,0.15);
+            width: 100%; min-height: 150px; border-radius: 18px;
+            background: rgba(255,51,102,0.04); border: 2px dashed rgba(255,51,102,0.2);
             display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-            cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;
+            cursor: pointer; transition: all 0.4s ease; position: relative; overflow: hidden;
         }
-        .gif-slot:hover { border-color: rgba(255,51,102,0.3); background: rgba(255,51,102,0.06); }
-        .gif-slot.has-gif { border-style: solid; border-color: rgba(255,51,102,0.25); }
+        .gif-slot:hover { border-color: rgba(255,51,102,0.4); background: rgba(255,51,102,0.08); transform: scale(1.01); }
+        .gif-slot.has-gif { border: none; padding: 3px; }
         .gif-slot.has-gif::before {
-            content: ''; position: absolute; inset: -2px; border-radius: 16px; z-index: -1;
-            background: conic-gradient(from 0deg, var(--red), var(--violet), var(--magenta), var(--red));
-            filter: blur(8px); opacity: 0.4; animation: spin 4s linear infinite;
+            content: ''; position: absolute; inset: -3px; border-radius: 20px; z-index: -1;
+            background: conic-gradient(from 0deg, var(--red), var(--violet), var(--magenta), var(--cyan), var(--red));
+            filter: blur(10px); opacity: 0.6; animation: spin 3s linear infinite;
         }
         .gif-slot.has-gif::after {
-            content: ''; position: absolute; inset: 0; border-radius: 14px;
-            box-shadow: inset 0 0 20px rgba(255,51,102,0.1);
+            content: ''; position: absolute; inset: 0; border-radius: 18px;
+            box-shadow: inset 0 0 25px rgba(255,51,102,0.15), 0 0 30px rgba(255,51,102,0.1);
+            pointer-events: none;
         }
-        .gif-slot img, .gif-slot video { width: 100%; border-radius: 12px; display: block; }
-        .gif-placeholder { display: flex; flex-direction: column; align-items: center; gap: 6px; color: rgba(255,255,255,0.3); font-size: 0.65rem; }
-        .gif-placeholder svg { width: 24px; height: 24px; stroke: var(--red); fill: none; stroke-width: 1.5; opacity: 0.5; }
+        .gif-slot img, .gif-slot video { width: 100%; border-radius: 15px; display: block; position: relative; z-index: 1; }
+        .gif-placeholder { display: flex; flex-direction: column; align-items: center; gap: 8px; color: rgba(255,255,255,0.35); font-size: 0.65rem; }
+        .gif-placeholder svg { width: 28px; height: 28px; stroke: var(--red); fill: none; stroke-width: 1.5; opacity: 0.5; filter: drop-shadow(0 0 5px rgba(255,51,102,0.3)); }
         #gif-input { display: none; }
 
         .try-again-btn {
@@ -254,6 +259,13 @@
         .success-sparkle:nth-child(2) { animation-delay: 0.2s; }
         .success-sparkle:nth-child(3) { animation-delay: 0.4s; }
         @keyframes bounce { 0%,100%{transform:translateY(0) scale(1);opacity:0.6} 50%{transform:translateY(-6px) scale(1.15);opacity:1} }
+
+        /* GIF Border Glow Animation */
+        @keyframes gifGlowPulse {
+            0%, 100% { opacity: 0.4; filter: blur(8px); }
+            50% { opacity: 0.8; filter: blur(14px); }
+        }
+        .gif-slot.has-gif::before { animation: spin 3s linear infinite, gifGlowPulse 2s ease-in-out infinite; }
     </style>
 </head>
 <body>
